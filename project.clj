@@ -10,16 +10,37 @@
                  [honeysql "0.9.4"]
                  [ragtime "0.8.0"] ; Database migration library
                  [clj-time "0.15.2"]
+                 [ring "1.6.2"]
+                 [http-kit "2.4.0-alpha4"]
+                 [clj-http-fake "1.0.3"]
+                 [metosin/compojure-api "2.0.0-alpha30"]
+                 [metosin/ring-http-response "0.9.0"]
                  [org.clojure/tools.logging "0.5.0"]
                  [ch.qos.logback/logback-classic "1.1.1"]
                  [org.clojure/java.jdbc "0.7.9"]
                  [org.postgresql/postgresql "42.2.4"]
                  [ring/ring-jetty-adapter "1.7.1"]]
-  :main ^:skip-aot learn-testing.core
+  :ring {:handler learn-testing/server/-main
+         :auto-reload? true
+         :open-browser? false
+         :reload-paths ["src/" "resources/" "templates/"]}
   :target-path "target/%s"
-  :profiles {:dev {:resource-paths ["config/dev" "templates/"
+  :main ^:skip-aot learn-testing.server
+  :profiles {:dev {:dependencies [[javax.servlet/javax.servlet-api "3.1.0"]
+                                  [ring/ring-mock "0.4.0"]]
+                   :plugins [[lein-ring "0.12.5"]
+                             [lein-cloverage "1.1.1"]
+                             [lein-kibit "0.1.7"]
+                             ]
+                   :resource-paths ["config/dev" "templates/"
                                     "resources/"]}
-             :test {:resource-paths ["config/test"]} ;; config for test
+             :test {:dependencies [[javax.servlet/javax.servlet-api "3.1.0"]
+                                   [ring/ring-mock "0.4.0"]
+                                   [org.clojure/test.check "0.10.0-alpha2"]
+                                   ]
+                    :plugins [[lein-ring "0.12.5"]
+                              [lein-cloverage "1.1.1"]]
+                    :resource-paths ["config/test"]}
              :uberjar {:aot :all
                        :resource-paths ["config/prod" "templates/"
                                         "resources/"]}})
